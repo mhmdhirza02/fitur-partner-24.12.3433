@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(PartnerSeeder::class);
         // 1. Akun Admin Utama
         \App\Models\User::create([
             'name' => 'Admin Amikom',
