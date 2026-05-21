@@ -11,6 +11,15 @@
 </div>
 
 <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+    <div class="p-6 border-b border-slate-100">
+        <form action="{{ route('admin.partners.index') }}" method="GET" class="flex gap-2 max-w-md">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama partner..." 
+                   class="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium text-sm">
+            <button type="submit" class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 active:scale-95 transition text-sm">
+                Cari
+            </button>
+        </form>
+    </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black tracking-widest">

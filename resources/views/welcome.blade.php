@@ -56,12 +56,14 @@
     <!-- Events Grid -->
     <section id="events" class="max-w-7xl mx-auto px-6 py-20">
              <!-- Blok Navigasi Filter Kategori -->
-   <div class="mb-8 flex gap-4 justify-center">
-        <!-- Rujukan awal navigasi bebas bawaan -->
-        <a href="/" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded text-black transition">Semua Kategori</a><!-- Melakukan iterasi nama Tab Kategori dinamis saat jumlah data bertambah  -->
+   <div class="mb-8 flex gap-4 justify-center flex-wrap">
+        <a href="/" 
+           class="px-4 py-2 rounded shadow-sm transition {{ !request('category') ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' }}">
+           Semua Kategori
+        </a>
         @foreach($categories as $cat)
             <a href="/?category={{ $cat->slug }}" 
-               class="px-4 py-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded shadow-sm transition">
+               class="px-4 py-2 rounded shadow-sm transition {{ request('category') == $cat->slug ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200' }}">
                 {{ $cat->name }}
             </a>
         @endforeach
@@ -99,5 +101,20 @@
         </div>
     </section>
 
+    <!-- Partners Section -->
+    <section class="max-w-7xl mx-auto px-6 py-12 mb-20">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold text-slate-800">Didukung Oleh</h2>
+            <p class="text-slate-500 mt-2">Partner resmi AmikomEventHub</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 items-center justify-items-center">
+            @foreach($partners as $partner)
+            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition w-full flex flex-col items-center justify-center gap-4 aspect-video">
+                <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="h-24 max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" title="{{ $partner->name }}">
+                <span class="text-sm font-bold text-slate-700 text-center line-clamp-1" title="{{ $partner->name }}">{{ $partner->name }}</span>
+            </div>
+            @endforeach
+        </div>
+    </section>
 
 @endsection

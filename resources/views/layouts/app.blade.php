@@ -69,11 +69,9 @@
             <div>
                 <h4 class="text-white font-bold mb-6">Kategori</h4>
                 <ul class="space-y-4">
-                    <li><a href="/?category=seminar-it" class="hover:text-white transition">Seminar</a></li>
-                    <li><a href="/?category=entertainment" class="hover:text-white transition">Entertaiment</a></li>
-                    <li><a href="/?category=seminar" class="hover:text-white transition">Seminar</a></li>
-                    <li><a href="/?category=kompetisi" class="hover:text-white transition">Kompetisi</a></li>
-                    <li><a href="/?category=hiburan" class="hover:text-white transition">hiburan</a></li>
+                    @foreach(\App\Models\Category::take(5)->get() as $footerCategory)
+                    <li><a href="/?category={{ $footerCategory->slug }}" class="hover:text-white transition">{{ $footerCategory->name }}</a></li>
+                    @endforeach
                 </ul>
             </div>
 

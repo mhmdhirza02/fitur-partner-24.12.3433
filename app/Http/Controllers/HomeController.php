@@ -10,12 +10,12 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil semua kategori
+        // Ambil semua kategori dan partner
         $categories = Category::all();
+        $partners = \App\Models\Partner::all();
 
         // Query event
         $query = Event::with('category')
-            ->where('date', '>=', now())
             ->orderBy('date', 'asc');
 
         // Filter berdasarkan kategori (jika ada)
@@ -28,6 +28,6 @@ class HomeController extends Controller
         // Ambil data event
         $events = $query->get();
 
-        return view('welcome', compact('events', 'categories'));
+        return view('welcome', compact('events', 'categories', 'partners'));
     }
 }

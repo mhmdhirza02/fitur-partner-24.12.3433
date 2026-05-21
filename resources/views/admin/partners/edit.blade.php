@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm max-w-3xl">
-    <form action="{{ route('admin.partners.update', $partner->id) }}" method="POST" class="space-y-6">
+    <form action="{{ route('admin.partners.update', $partner->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         @method('PUT')
         
@@ -16,19 +16,14 @@
         </div>
 
         <div>
-            <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Logo URL</label>
-            <select name="logo_url" class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium cursor-pointer" required>
-                <option value="https://placehold.co/200x200" {{ old('logo_url', $partner->logo_url) == 'https://placehold.co/200x200' ? 'selected' : '' }}>
-                    Logo 1 (Default Gray)
-                </option>
-                <option value="https://placehold.co/200x200/orange/white" {{ old('logo_url', $partner->logo_url) == 'https://placehold.co/200x200/orange/white' ? 'selected' : '' }}>
-                    Logo 2 (Orange Accent)
-                </option>
-                <option value="https://placehold.co/200x200/black/white" {{ old('logo_url', $partner->logo_url) == 'https://placehold.co/200x200/black/white' ? 'selected' : '' }}>
-                    Logo 3 (Dark Monochrome)
-                </option>
-            </select>
-            @error('logo_url') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+            <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Upload Logo Partner</label>
+            <div class="mb-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <p class="text-xs font-bold text-slate-500 mb-2 uppercase">Logo Saat Ini:</p>
+                <img src="{{ $partner->logo_url }}" alt="Logo Saat Ini" class="h-16 object-contain rounded">
+            </div>
+            <input type="file" name="logo" accept="image/*" class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium cursor-pointer">
+            <p class="text-xs text-slate-400 mt-2 font-medium">* Biarkan kosong jika tidak ingin mengubah logo.</p>
+            @error('logo') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
         </div>
 
         <div class="pt-4 flex justify-end gap-4 border-t border-slate-100">
