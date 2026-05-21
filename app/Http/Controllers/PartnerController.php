@@ -9,7 +9,7 @@ class PartnerController extends Controller
 {
     public function index()
     {
-        $partners = Partner::all();
+        $partners = Partner::paginate(10);
 
         return view('admin.partners.index', compact('partners'));
     }
@@ -21,11 +21,43 @@ class PartnerController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'logo_url' => 'required|string',
+        ]);
+
         Partner::create([
             'name' => $request->name,
             'logo_url' => $request->logo_url,
         ]);
 
-        return redirect('/admin/partners');
+        return redirect()->route('admin.partners.index')->with('success', 'Partner berhasil ditambahkan!');
+    }
+
+    public function edit(Partner $partner)
+    {
+        return view('admin.partners.edit', compact('partner'));
+    }
+
+    public function update(Request $request, Partner $partner)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'logo_url' => 'required|string',
+        ]);
+
+        $partner->update([
+            'name' => $request->name,
+            'logo_url' => $request->logo_url,
+        ]);
+
+        return redirect()->route('admin.partners.index')->with('success', 'Partner berhasil diperbarui!');
+    }
+
+    public function destroy(Partner $partner)
+    {
+        $partner->delete();
+
+        return redirect()->route('admin.partners.index')->with('success', 'Partner berhasil dihapus!');
     }
 }
