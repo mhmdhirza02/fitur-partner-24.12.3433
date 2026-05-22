@@ -11,31 +11,13 @@
     </div>
 @endif
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Form Tambah Kategori -->
-    <div class="lg:col-span-1">
-        <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm sticky top-28">
-            <h3 class="font-black text-lg text-slate-800 mb-4">Tambah Kategori</h3>
-            <form action="{{ route('admin.categories.store') }}" method="POST" class="space-y-4">
-                @csrf
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">Nama Kategori</label>
-                    <input type="text" name="name" value="{{ old('name') }}" placeholder="Contoh: Musik, Workshop..." 
-                           class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium" required>
-                    @error('name') 
-                        <span class="text-rose-500 text-xs mt-1 block font-semibold">{{ $message }}</span> 
-                    @enderror
-                </div>
-                <button type="submit" class="w-full px-6 py-4 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 active:scale-95 transition">
-                    + Simpan Kategori
-                </button>
-            </form>
-        </div>
-    </div>
+<div class="mb-4 text-right">
+    <a href="{{ route('admin.categories.create') }}" class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 active:scale-95 transition">
+        + Tambah Kategori Baru
+    </a>
+</div>
 
-    <!-- Tabel Daftar Kategori -->
-    <div class="lg:col-span-2">
-        <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+<div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
             <div class="p-6 border-b border-slate-100">
                 <form action="{{ route('admin.categories.index') }}" method="GET" class="flex gap-2">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama kategori..." 
@@ -109,13 +91,11 @@
                 </table>
             </div>
             @if($categories->hasPages())
-            <div class="px-8 py-6 bg-slate-50/50 border-t">
+            <div class="px-8 py-6 bg-slate-50/50 border-t items-center">
                 {{ $categories->links() }}
             </div>
             @endif
         </div>
-    </div>
-</div>
 
 <!-- Modal Edit Kategori -->
 <div id="editModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">

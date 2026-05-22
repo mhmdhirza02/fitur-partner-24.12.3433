@@ -23,11 +23,11 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource (redirected to index).
+     * Show the form for creating a new resource.
      */
     public function create()
     {
-        return redirect()->route('admin.categories.index');
+        return view('admin.categories.create');
     }
 
     /**
