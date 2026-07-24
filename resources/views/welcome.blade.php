@@ -74,8 +74,11 @@
         <div
             class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden">
             <div class="relative overflow-hidden aspect-[3/4]">
-                <img src="https://placehold.co/200x600" alt="{{ $event->title }}"
-                   class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <img src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path))
+                     ? asset('storage/' . $event->poster_path)
+                     : 'https://placehold.co/200x600' }}" alt="{{ $event->title }}"
+                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+
                 <div
                     class="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur rounded-lg text-xs font-bold uppercase text-indigo-600">
                     {{ $event->category->name }}</div>
@@ -91,8 +94,7 @@
                 </div>
                 <div class="flex justify-between items-center pt-4 border-t">
                     <span class="text-2xl font-black text-indigo-600">Rp {{ number_format($event->price, 0, ',', '.') }}</span>
-                    <a href="{{url('event/1')}}" class="px-5 py-2 bg-indigo-50 text-indigo-600 rounded-xl font-bold hover:bg-indigo-600 hover:text-white transition">Lihat
-                        Detail</a>
+                   <a href="{{ route('events.show', $event->id) }}" class="px-5 py-2 bg-indigo-50 text-indigo-600 rounded-xl font-bold hover:bg-indigo-600 hover:text-white transition">Lihat Detail</a>
                 </div>
             </div>
         </div>
@@ -110,7 +112,11 @@
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 items-center justify-items-center">
             @foreach($partners as $partner)
             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition w-full flex flex-col items-center justify-center gap-4 aspect-video">
-                <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="h-24 max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" title="{{ $partner->name }}">
+               <img src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path))
+                     ? asset('storage/' . $event->poster_path)
+                     : 'https://placehold.co/200x600' }}" alt="{{ $event->title }}"
+                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+
                 <span class="text-sm font-bold text-slate-700 text-center line-clamp-1" title="{{ $partner->name }}">{{ $partner->name }}</span>
             </div>
             @endforeach

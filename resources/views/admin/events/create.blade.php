@@ -4,8 +4,7 @@
 @section('page_subtitle', 'Masukkan detail acara baru yang akan diselenggarakan.')
 
 @section('content')
-<div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm max-w-3xl">
-    <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+<form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-2">
         @csrf
         
         <div>
