@@ -15,6 +15,27 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        if (auth()->check()) {
+            $user = auth()->user();
+            
+            if ($user->role === 'superadmin') {
+                return $next($request);
+            }
+            
+            if ($user->role === 'partner') {
+                if ($user->partner && $user->partner->is_approved) {
+                    return $next($request);
+                }
+                
+                // Allow them to access the pending page or logout
+                if ($request->routeIs('admin.pending') || $request->routeIs('logout')) {
+                    return $next($request);
+                }
+
+                return redirect()->route('admin.pending');
+            }
+        }
+
+        return redirect('/');
     }
 }

@@ -49,8 +49,18 @@
          </div>
      </div>
 
-     <!-- Latest Sales Table -->
-     <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+     <!-- Chart and Latest Sales Grid -->
+     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+         <!-- Event Growth Chart -->
+         <div class="lg:col-span-1 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden p-6 flex flex-col">
+             <h3 class="font-black text-xl mb-4">Pertumbuhan Event</h3>
+             <div class="relative w-full flex-grow" style="min-height: 250px; max-height: 350px;">
+                 <canvas id="eventGrowthChart"></canvas>
+             </div>
+         </div>
+
+         <!-- Latest Sales Table -->
+         <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
          <div class="p-8 border-b flex justify-between items-center">
              <h3 class="font-black text-xl">Transaksi Terakhir</h3>
              <a href="{{ route('admin.transactions.index') }}" class="text-indigo-600 font-bold hover:underline">Lihat Semua</a>
@@ -95,4 +105,50 @@
              </table>
          </div>
      </div>
+     </div>
+
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <script>
+         document.addEventListener('DOMContentLoaded', function() {
+             const ctx = document.getElementById('eventGrowthChart').getContext('2d');
+             
+             new Chart(ctx, {
+                 type: 'line',
+                 data: {
+                     labels: {!! json_encode($chartLabels) !!},
+                     datasets: [{
+                         label: 'Event Baru',
+                         data: {!! json_encode($eventData) !!},
+                         borderColor: '#4f46e5',
+                         backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                         borderWidth: 3,
+                         pointBackgroundColor: '#ffffff',
+                         pointBorderColor: '#4f46e5',
+                         pointBorderWidth: 2,
+                         pointRadius: 4,
+                         pointHoverRadius: 6,
+                         fill: true,
+                         tension: 0.4 // Smooth curve
+                     }]
+                 },
+                 options: {
+                     responsive: true,
+                     maintainAspectRatio: false,
+                     plugins: {
+                         legend: { display: false }
+                     },
+                     scales: {
+                         x: {
+                             grid: { display: false }
+                         },
+                         y: {
+                             beginAtZero: true,
+                             ticks: { stepSize: 1 },
+                             grid: { borderDash: [4, 4] }
+                         }
+                     }
+                 }
+             });
+         });
+     </script>
      @endsection

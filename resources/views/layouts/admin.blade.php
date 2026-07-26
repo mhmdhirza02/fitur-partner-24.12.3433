@@ -12,6 +12,15 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+        /* Hide HTML5 Up and Down arrows on number inputs for clean manual typing */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 
@@ -43,14 +52,22 @@
                 </svg>
                 Kelola Kategori
             </a>
+            <a href="{{ route('admin.vouchers.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.vouchers.*') ? 'bg-indigo-800 text-white' : 'hover:bg-indigo-800' }} rounded-xl font-bold transition">
+                <svg class="w-5 h-5 {{ request()->routeIs('admin.vouchers.*') ? 'text-indigo-300' : 'text-indigo-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
+                </svg>
+                Kelola Voucher
+            </a>
+            @if(auth()->user()->role === 'superadmin')
             <a href="{{ route('admin.partners.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.partners.*') ? 'bg-indigo-800 text-white' : 'hover:bg-indigo-800' }} rounded-xl font-bold transition">
                 <svg class="w-5 h-5 {{ request()->routeIs('admin.partners.*') ? 'text-indigo-300' : 'text-indigo-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
                 Kelola Partner
             </a>
+            @endif
             <a href="{{ route('admin.transactions.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.transactions.*') ? 'bg-indigo-800 text-white' : 'hover:bg-indigo-800' }} rounded-xl font-bold transition">
-                <svg class="w-5 h-5 {{ request()->routeIs('admin.transactisons.*') ? 'text-indigo-300' : 'text-indigo-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 {{ request()->routeIs('admin.transactions.*') ? 'text-indigo-300' : 'text-indigo-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                 </svg>
                 Laporan Transaksi
@@ -76,15 +93,15 @@
         <header class="flex justify-between items-center mb-10 w-full col-span-full">
             <div>
                 <h1 class="text-3xl font-black">@yield('page_title', 'Dashboard')</h1>
-                <p class="text-slate-500 font-medium">@yield('page_subtitle', 'Selamat datang kembali, Admin!')</p>
+                <p class="text-slate-500 font-medium">@yield('page_subtitle', 'Selamat datang kembali!')</p>
             </div>
             <div class="flex items-center gap-4">
                 <div class="text-right hidden md:block">
-                    <p class="font-bold">Admin</p>
-                    <p class="text-xs text-slate-400">Penyelenggara Utama</p>
+                    <p class="font-bold">{{ auth()->user()->name }}</p>
+                    <p class="text-xs text-slate-400">{{ auth()->user()->role === 'superadmin' ? 'Superadmin' : 'Partner (Organizer)' }}</p>
                 </div>
                 <div class="w-12 h-12 bg-white rounded-2xl shadow-sm border flex items-center justify-center p-1">
-                    <img src="https://ui-avatars.com/api/?name=admin&background=6366f1&color=fff" class="rounded-xl">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=6366f1&color=fff" class="rounded-xl">
                 </div>
             </div>
         </header>

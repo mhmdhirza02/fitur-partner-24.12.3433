@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'midtrans/callback',
         ]);
 
+        // Tambahkan middleware ke grup web untuk mencegah admin/partner melihat halaman publik
+        $middleware->web(append: [
+            \App\Http\Middleware\RedirectAdminToDashboard::class,
+        ]);
+
         // Alias middleware
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,

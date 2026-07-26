@@ -13,8 +13,13 @@ class EventController extends Controller
      */
     public function index()
     {
-        // Memakai relasi dan pengaturan limit paginasi (10 entri per halaman)
-        $events = \App\Models\Event::with('category')->latest()->paginate(10);
+        $query = \App\Models\Event::with('category');
+        
+        if (auth()->user()->role === 'partner') {
+            $query->where('partner_id', auth()->user()->partner_id);
+        }
+
+        $events = $query->latest()->paginate(10);
         return view('admin.events.index', compact('events'));
     }
 
@@ -24,7 +29,8 @@ class EventController extends Controller
     public function create()
     {
         $categories = \App\Models\Category::all();
-        return view('admin.events.create', compact('categories'));
+        $partners = auth()->user()->role === 'superadmin' ? \App\Models\Partner::all() : [];
+        return view('admin.events.create', compact('categories', 'partners'));
     }
 
     /**
@@ -35,6 +41,7 @@ class EventController extends Controller
      // Menerapkan validasi data request dari pengguna
      $data = $request->validate([
         'category_id' => 'required|exists:categories,id',
+        'partner_id' => 'nullable|exists:partners,id',
         'title' => 'required|string|max:255',
         'description' => 'nullable|string',
         'date' => 'required|date',
@@ -44,15 +51,35 @@ class EventController extends Controller
         'poster' => 'nullable|image|max:2048' // Maksimal 2MB
     ]);
 
+    if (auth()->user()->role === 'partner') {
+        $data['partner_id'] = auth()->user()->partner_id;
+    }
+
     if ($request->hasFile('poster')) {
         // Simpan ke direktori storage/app/public/posters
         $data['poster_path'] = $request->file('poster')->store('posters', 'public');
     }
 
      // Menyimpan data yang telah divalidasi ke dalam tabel menggunakan Model
-     \App\Models\Event::create($data);
+     $event = \App\Models\Event::create($data);
 
-     return redirect()->route('admin.events.index')->with('success', 'Data Event berhasil ditambahkan.');
+     // Menyimpan konfigurasi tiket bertahap (Dynamic Pricing / Staged Tiers)
+     if ($request->has('tiers') && is_array($request->tiers)) {
+         foreach ($request->tiers as $tier) {
+             if (!empty($tier['name']) && isset($tier['price']) && isset($tier['stock'])) {
+                 $event->ticketTiers()->create([
+                     'name' => $tier['name'],
+                     'price' => $tier['price'],
+                     'stock' => $tier['stock'],
+                     'start_date' => !empty($tier['start_date']) ? $tier['start_date'] : null,
+                     'end_date' => !empty($tier['end_date']) ? $tier['end_date'] : null,
+                     'is_active' => true,
+                 ]);
+             }
+         }
+     }
+
+     return redirect()->route('admin.events.index')->with('success', 'Data Event & Kategori Tiket berhasil ditambahkan.');
 }
 
 
@@ -69,8 +96,15 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
+        // Tenant check for edit
+        if (auth()->user()->role === 'partner' && $event->partner_id !== auth()->user()->partner_id) {
+            abort(403);
+        }
+
         $categories = \App\Models\Category::all();
-        return view('admin.events.edit', compact('event', 'categories'));
+        $partners = auth()->user()->role === 'superadmin' ? \App\Models\Partner::all() : [];
+        $event->load('ticketTiers');
+        return view('admin.events.edit', compact('event', 'categories', 'partners'));
     }
 
     /**
@@ -78,8 +112,14 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
 {
+    // Tenant check
+    if (auth()->user()->role === 'partner' && $event->partner_id !== auth()->user()->partner_id) {
+        abort(403);
+    }
+
    $data = $request->validate([
         'category_id' => 'required|exists:categories,id',
+        'partner_id' => 'nullable|exists:partners,id',
         'title' => 'required|string|max:255',
         'description' => 'nullable|string',
         'date' => 'required|date',
@@ -88,6 +128,10 @@ class EventController extends Controller
         'stock' => 'required|numeric|min:1',
         'poster' => 'nullable|image|max:2048'
     ]); 
+
+    if (auth()->user()->role === 'partner') {
+        $data['partner_id'] = auth()->user()->partner_id;
+    }
 
     if ($request->hasFile('poster')) {
         // Hapus gambar lama jika sebelumnya sudah memiliki poster
@@ -99,7 +143,25 @@ class EventController extends Controller
     }
 
     $event->update($data);
-    return redirect()->route('admin.events.index')->with('success', 'Event berhasil diperbarui.');
+
+    // Update konfigurasi tiket bertahap (Dynamic Pricing)
+    if ($request->has('tiers') && is_array($request->tiers)) {
+        $event->ticketTiers()->delete(); // Hapus konfigurasi lama dan ganti dengan yang baru
+        foreach ($request->tiers as $tier) {
+            if (!empty($tier['name']) && isset($tier['price']) && isset($tier['stock'])) {
+                $event->ticketTiers()->create([
+                    'name' => $tier['name'],
+                    'price' => $tier['price'],
+                    'stock' => $tier['stock'],
+                    'start_date' => !empty($tier['start_date']) ? $tier['start_date'] : null,
+                    'end_date' => !empty($tier['end_date']) ? $tier['end_date'] : null,
+                    'is_active' => true,
+                ]);
+            }
+        }
+    }
+
+    return redirect()->route('admin.events.index')->with('success', 'Event & Kategori Tiket berhasil diperbarui.');
 }
 
 

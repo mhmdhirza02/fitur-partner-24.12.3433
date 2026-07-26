@@ -42,9 +42,10 @@ class CategoryController extends Controller
         Category::create([
             'name' => $request->name,
             'slug' => Str::slug($request->name),
+            'partner_id' => auth()->user()->role === 'partner' ? auth()->user()->partner_id : null,
         ]);
 
-        return redirect()->route('admin.categories.index');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori baru berhasil ditambahkan!');
     }
 
     /**
@@ -60,6 +61,10 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+        if (auth()->user()->role !== 'superadmin' && $category->partner_id !== auth()->user()->partner_id) {
+            return back()->with('error', 'Anda tidak berhak mengubah kategori milik sistem atau partner lain.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
         ]);
@@ -69,7 +74,7 @@ class CategoryController extends Controller
             'slug' => Str::slug($request->name),
         ]);
 
-        return redirect()->route('admin.categories.index');
+        return redirect()->route('admin.categories.index')->with('success', 'Nama kategori berhasil diperbarui!');
     }
 
     /**
@@ -77,8 +82,16 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        if (auth()->user()->role !== 'superadmin' && $category->partner_id !== auth()->user()->partner_id) {
+            return back()->with('error', 'Anda tidak berhak menghapus kategori milik sistem atau partner lain.');
+        }
+
+        if ($category->events()->count() > 0) {
+            return back()->with('error', 'Kategori ini tidak dapat dihapus karena masih digunakan oleh event yang ada.');
+        }
+
         $category->delete();
 
-        return redirect()->route('admin.categories.index');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus!');
     }
 }

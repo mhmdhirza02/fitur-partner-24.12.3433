@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MidtransWebhookController extends Controller
 {
@@ -44,7 +46,13 @@ class MidtransWebhookController extends Controller
             $transaction->status = 'settlement';
             $this->processSuccess($transaction);
         } else if (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
-            $transaction->status = 'failed';
+            // Jika status transaksi dibatalkan, ditolak, atau expired (misal 15 menit),
+            // dan status di lokal masih pending/challenge (stok sedang ditahan),
+            // maka lepaskan tiket (+1) agar dapat direbut pembeli lain.
+            if (in_array(strtolower($transaction->status), ['pending', 'challenge'])) {
+                $this->releaseReservedTicket($transaction);
+            }
+            $transaction->status = ($transactionStatus == 'expire') ? 'expired' : 'failed';
         } else if ($transactionStatus == 'pending') {
             $transaction->status = 'pending';
         }
@@ -53,23 +61,25 @@ class MidtransWebhookController extends Controller
         return response()->json(['message' => 'OK']);
     }
 
-       private function processSuccess(Transaction $transaction)
+    private function processSuccess(Transaction $transaction)
     {
-        $event = $transaction->event;
-        
-        // Jika tiket masih ada dan terhubung dengan data event, kurangi jumlahnya sebanyak 1
-        if ($event && $event->stock > 0) {
-            $event->stock = $event->stock - 1;
-            $event->save();
-            
-            // Mengirimkan email E-Ticket ke pelanggan
-            try {
-                \Illuminate\Support\Facades\Mail::to($transaction->customer_email)->send(new \App\Mail\EventTicketMail($transaction));
-            } catch (\Exception $e) {
-                \Log::error('Gagal mengirim email E-Ticket: ' . $e->getMessage());
-            }
-        } else {
-            \Log::warning('Stock habis setelah pembayaran berhasil (Perlu proses refund opsional). Order: ' . $transaction->order_id);
+        // CATATAN: Stok TIDAK dikurangi lagi di sini karena stok sudah ditahan (reserved) sejak tombol Checkout diklik.
+        // Mengirimkan email E-Ticket ke pelanggan
+        try {
+            \Illuminate\Support\Facades\Mail::to($transaction->customer_email)->send(new \App\Mail\EventTicketMail($transaction));
+        } catch (\Exception $e) {
+            \Log::error('Gagal mengirim email E-Ticket: ' . $e->getMessage());
         }
+    }
+
+    private function releaseReservedTicket(Transaction $transaction)
+    {
+        DB::transaction(function () use ($transaction) {
+            $event = Event::where('id', $transaction->event_id)->lockForUpdate()->first();
+            if ($event) {
+                $event->increment('stock');
+            }
+        });
+        \Log::info("Tiket untuk Order ID {$transaction->order_id} dilepaskan kembali (+1) karena pembayaran expired/batal.");
     }
 }

@@ -6,8 +6,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Partner;
 
-class PartnerController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class PartnerController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            function ($request, $next) {
+                if (auth()->check() && auth()->user()->role === 'partner') {
+                    abort(403, 'Unauthorized action.');
+                }
+                return $next($request);
+            }
+        ];
+    }
+
     public function index(Request $request)
     {
         $query = Partner::query();
@@ -70,5 +85,15 @@ class PartnerController extends Controller
         $partner->delete();
 
         return redirect()->route('admin.partners.index');
+    }
+
+    public function toggleApprove(Partner $partner)
+    {
+        $partner->update([
+            'is_approved' => !$partner->is_approved
+        ]);
+        
+        $status = $partner->is_approved ? 'disetujui' : 'ditangguhkan';
+        return redirect()->route('admin.partners.index')->with('success', "Partner berhasil $status.");
     }
 }

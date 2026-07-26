@@ -10,12 +10,15 @@ use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\Admin\VoucherController;
 
 // Rute User Area
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
 Route::get('/checkout', [EventController::class,'checkout'])->name('checkout');
-Route::get('/my-ticket', [EventController::class, 'ticket'])->name('ticket');
+Route::post('/checkout/check-voucher', [App\Http\Controllers\CheckoutController::class, 'checkVoucher'])->name('checkout.check-voucher');
+Route::get('/my-ticket/{order_id}', [EventController::class, 'ticket'])->name('ticket');
+Route::get('/my-tickets', [EventController::class, 'myTickets'])->name('my-tickets');
 Route::get('/checkout/{event}', [App\Http\Controllers\CheckoutController::class, 'create'])->name('checkout.create');
 Route::post('/checkout/{event}', [App\Http\Controllers\CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/payment/{order_id}', [\App\Http\Controllers\CheckoutController::class, 'payment'])->name('checkout.payment');
@@ -23,11 +26,30 @@ Route::get('/success/{order_id}', [\App\Http\Controllers\CheckoutController::cla
 Route::post('/midtrans/callback', [\App\Http\Controllers\MidtransWebhookController::class, 'handle']);
 
 // ===============================
-// MIDTRANS CALLBACK
+// PARTNER PROFILE (PUBLIC)
 // ===============================
-Route::get('/login', function () {
-    return redirect()->route('admin.login');
-})->name('login');
+Route::get('/organizer/{id}', [\App\Http\Controllers\PartnerProfileController::class, 'show'])->name('partner.profile');
+// ===============================
+// REVIEWS
+// ===============================
+Route::get('/reviews/create/{order_id}', [\App\Http\Controllers\ReviewController::class, 'create'])->name('reviews.create');
+Route::post('/reviews/{order_id}', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+// ===============================
+// GOOGLE SSO
+// ===============================
+Route::get('/auth/google', [\App\Http\Controllers\Auth\GoogleSSOController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleSSOController::class, 'callback'])->name('auth.google.callback');
+// ===============================
+// MIDTRANS CALLBACK
+Route::get('/login', [\App\Http\Controllers\Auth\UserAuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\Auth\UserAuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [\App\Http\Controllers\Auth\UserAuthController::class, 'logout'])->name('logout');
+
+Route::get('/user/register', [\App\Http\Controllers\Auth\UserAuthController::class, 'showRegistrationForm'])->name('user.register');
+Route::post('/user/register', [\App\Http\Controllers\Auth\UserAuthController::class, 'register'])->name('user.register.post');
+
+Route::get('/register', [\App\Http\Controllers\Auth\PartnerRegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [\App\Http\Controllers\Auth\PartnerRegisterController::class, 'register'])->name('register.post');
 
 // Grouping utama untuk prefix 'admin' dan name 'admin.'
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -40,6 +62,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // 2. Rute Terproteksi (Memerlukan middleware auth & admin)
     Route::middleware(['auth', 'admin'])->group(function () {
 
+        // Halaman Peninjauan (Pending)
+        Route::get('/pending', function () {
+            if (auth()->user()->role === 'superadmin' || (auth()->user()->role === 'partner' && auth()->user()->partner->is_approved)) {
+                return redirect()->route('admin.dashboard');
+            }
+            return view('admin.pending');
+        })->name('pending');
+
         // Dashboard
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -49,9 +79,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Resources (CRUD)
         Route::resource('events', EventAdminController::class);
+        Route::post('partners/{partner}/toggle-approve', [PartnerController::class, 'toggleApprove'])->name('partners.toggle-approve');
         Route::resource('partners', PartnerController::class);
         Route::resource('categories', CategoryController::class);
-
-        Route::get('transactions', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('transactions.index');
+        Route::resource('vouchers', VoucherController::class);
     });
 });

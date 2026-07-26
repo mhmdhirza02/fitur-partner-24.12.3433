@@ -3,7 +3,7 @@
 @section('content')
 
    <!-- Hero Section -->
-    <section class="max-w-7xl mx-auto px-6 py-20 flex flex-col md:flex-row items-center gap-12">
+    <section id="jelajahi" class="max-w-7xl mx-auto px-6 py-20 flex flex-col md:flex-row items-center gap-12">
         <div class="flex-1 space-y-8">
             <span
                 class="inline-block px-4 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm font-bold uppercase tracking-wider">#1
@@ -16,7 +16,7 @@
                 Midtrans.
             </p>
             <div class="flex gap-4">
-                <a href="#events"
+                <a href="#kategori"
                     class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 hover:scale-105 transition-transform">
                     Mulai Jelajah
                 </a>
@@ -54,7 +54,7 @@
     </section>
 
     <!-- Events Grid -->
-    <section id="events" class="max-w-7xl mx-auto px-6 py-20">
+    <section id="kategori" class="max-w-7xl mx-auto px-6 py-20">
              <!-- Blok Navigasi Filter Kategori -->
    <div class="mb-8 flex gap-4 justify-center flex-wrap">
         <a href="/" 
@@ -111,14 +111,16 @@
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 items-center justify-items-center">
             @foreach($partners as $partner)
-            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition w-full flex flex-col items-center justify-center gap-4 aspect-video">
-               <img src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path))
-                     ? asset('storage/' . $event->poster_path)
-                     : 'https://placehold.co/200x600' }}" alt="{{ $event->title }}"
-                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-
-                <span class="text-sm font-bold text-slate-700 text-center line-clamp-1" title="{{ $partner->name }}">{{ $partner->name }}</span>
-            </div>
+            <a href="{{ route('partner.profile', $partner->id) }}" class="group bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all duration-300 w-full flex flex-col items-center justify-center gap-3.5 aspect-[4/3] relative overflow-hidden">
+                <div class="w-16 h-16 rounded-xl flex items-center justify-center overflow-hidden bg-slate-50 group-hover:scale-105 transition-transform duration-300">
+                    @if($partner->logo_url && !str_contains($partner->logo_url, 'placehold.co'))
+                        <img src="{{ str_starts_with($partner->logo_url, 'http') ? $partner->logo_url : asset(ltrim($partner->logo_url, '/')) }}" alt="{{ $partner->name }}" class="w-full h-full object-contain p-1">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($partner->name) }}&background=4f46e5&color=fff&size=128&bold=true" alt="{{ $partner->name }}" class="w-full h-full object-cover">
+                    @endif
+                </div>
+                <span class="text-xs sm:text-sm font-bold text-slate-700 group-hover:text-indigo-600 transition-colors text-center line-clamp-1 w-full px-2" title="{{ $partner->name }}">{{ $partner->name }}</span>
+            </a>
             @endforeach
         </div>
     </section>

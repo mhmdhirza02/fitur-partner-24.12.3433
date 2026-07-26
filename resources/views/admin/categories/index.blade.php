@@ -46,9 +46,14 @@
                             <td class="px-8 py-6 text-slate-500 font-medium">#{{ $category->id }}</td>
                             <td class="px-8 py-6">
                                 <p class="font-black text-slate-800">{{ $category->name }}</p>
-                                <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mt-0.5">
-                                    {{ $category->slug }}
-                                </p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{{ $category->slug }}</span>
+                                    @if($category->partner_id && $category->partner)
+                                        <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md text-[10px] font-bold">Oleh: {{ $category->partner->name }}</span>
+                                    @else
+                                        <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-bold">Sistem (Umum)</span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-8 py-6 text-slate-600 font-medium text-sm">
                                 {{ $category->created_at->format('d M Y, H:i') }}
@@ -57,10 +62,11 @@
                                 {{ $category->updated_at->format('d M Y, H:i') }}
                             </td>
                             <td class="px-8 py-6">
+                                @if(auth()->user()->role === 'superadmin' || $category->partner_id === auth()->user()->partner_id)
                                 <div class="flex gap-2">
                                     <!-- Edit Button (Triggers Modal via JS) -->
                                     <button onclick="openEditModal('{{ $category->id }}', '{{ addslashes($category->name) }}')"
-                                            class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition">
+                                            class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition" title="Ubah Kategori">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 00-2 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -72,7 +78,7 @@
                                           onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori ini?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="p-2.5 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white transition">
+                                        <button type="submit" class="p-2.5 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white transition" title="Hapus Kategori">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -80,6 +86,11 @@
                                         </button>
                                     </form>
                                 </div>
+                                @else
+                                <span class="inline-block px-3 py-1.5 bg-slate-100 text-slate-500 rounded-xl text-xs font-bold" title="Hanya pemilik kategori atau Superadmin yang dapat mengubah/menghapus">
+                                    {{ $category->partner_id ? 'Milik Partner Lain' : 'Kategori Sistem' }}
+                                </span>
+                                @endif
                             </td>
                         </tr>
                         @empty

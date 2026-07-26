@@ -22,7 +22,10 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('admin.dashboard'); // Arahkan ke rute dashboard
+            if (in_array(auth()->user()->role, ['superadmin', 'partner'])) {
+                return redirect()->route('admin.dashboard'); // Arahkan ke rute dashboard admin
+            }
+            return redirect()->route('home'); // Arahkan user biasa ke beranda
         }
 
         return back()->withErrors([
