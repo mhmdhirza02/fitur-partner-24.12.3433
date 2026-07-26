@@ -15,6 +15,7 @@
         "APP_ENV": "production",
         "APP_DEBUG": "true",
         "APP_URL": "",
+        "APP_KEY":"base64:j+I4gSTxk3JESTk+yjpdFqaNlbPxipKolDvN3xKOnwA=",
  
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
@@ -25,6 +26,13 @@
  
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+        "SESSION_DRIVER": "cookie",
+
+        "DB_CONNECTION": "mysql",
+        "DB_HOST": "bvhqnak3nfpetoc7rq3y-mysql.services.clever-cloud.com",
+        "DB_PORT": "3306",
+        "DB_DATABASE": "bvhqnak3nfpetoc7rq3y",
+        "DB_USERNAME": "u48xc6dha4nd1cp1",
+        "DB_PASSWORD": "qhy7PfIbt86GhsbxocNVqhy7PfIbt86Ghsbxoc"
     }
 }
