@@ -25,7 +25,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
-        "APP_URL": "",
+        "APP_URL": "https://fitur-partner-24-12-3433.vercel.app",
         "APP_KEY":"base64:j+I4gSTxk3JESTk+yjpdFqaNlbPxipKolDvN3xKOnwA=",
  
         "APP_CONFIG_CACHE": "/tmp/config.php",
@@ -53,6 +53,7 @@
         "AWS_BUCKET": "posters",
         "AWS_URL": "https://bcmuergskjegjquvrpkc.supabase.co/storage/v1/object/public",
         "AWS_ENDPOINT": "https://bcmuergskjegjquvrpkc.supabase.co/storage/v1/s3",
-        "AWS_USE_PATH_STYLE_ENDPOINT": "true"
+        "AWS_USE_PATH_STYLE_ENDPOINT": "true",
+        "GOOGLE_REDIRECT_URI": "https://fitur-partner-24-12-3433.vercel.app/auth/google/callback"
     }
 }
