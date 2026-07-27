@@ -12,6 +12,21 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\VoucherController;
 
+// Rute khusus untuk melayani file statis assets di lingkungan serverless Vercel dengan fallback ke Supabase Cloud
+Route::get('/assets/{filename}', function ($filename) {
+    $path = public_path('assets/' . $filename);
+    if (file_exists($path)) {
+        return response()->file($path);
+    }
+    $rootPath = base_path('assets/' . $filename);
+    if (file_exists($rootPath)) {
+        return response()->file($rootPath);
+    }
+    // Fallback otomatis ke cloud storage Supabase jika file tidak ada di storage serverless
+    $baseUrl = rtrim(env('AWS_URL', 'https://bcmuergskjegjquvrpkc.supabase.co/storage/v1/object/public'), '/');
+    return redirect($baseUrl . '/posters/assets/' . $filename);
+});
+
 // Rute User Area
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
