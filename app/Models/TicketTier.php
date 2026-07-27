@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\PostgresBoolean;
 use Illuminate\Database\Eloquent\Model;
 
 class TicketTier extends Model
@@ -19,7 +20,7 @@ class TicketTier extends Model
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
-        'is_active' => 'boolean',
+        'is_active' => PostgresBoolean::class,
     ];
 
     public function event()

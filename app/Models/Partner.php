@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\PostgresBoolean;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,6 +12,10 @@ class Partner extends Model
         'name',
         'logo_url',
         'is_approved',
+    ];
+
+    protected $casts = [
+        'is_approved' => PostgresBoolean::class,
     ];
 
     public function getLogoUrlAttribute($value)
