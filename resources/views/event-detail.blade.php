@@ -23,7 +23,7 @@
                     </div>
                     <div class="flex items-center gap-4">
                         @if($event->partner && $event->partner->logo_url && !str_contains($event->partner->logo_url, 'placehold.co'))
-                            <img src="{{ str_starts_with($event->partner->logo_url, 'http') ? $event->partner->logo_url : asset(ltrim($event->partner->logo_url, '/')) }}" class="w-12 h-12 rounded-full border-2 border-indigo-50 object-contain">
+                            <img src="{{ $event->partner->logo_url }}" class="w-12 h-12 rounded-full border-2 border-indigo-50 object-contain">
                         @else
                             <img src="https://ui-avatars.com/api/?name={{ urlencode($event->partner ? $event->partner->name : 'AEH') }}&background=4f46e5&color=fff&size=128&bold=true" class="w-12 h-12 rounded-full border-2 border-indigo-50 object-cover">
                         @endif

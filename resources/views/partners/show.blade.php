@@ -11,7 +11,7 @@
 
         <div class="w-40 h-40 shrink-0 bg-white border-4 border-indigo-50 rounded-full shadow-lg p-2 overflow-hidden flex items-center justify-center relative z-10">
             @if($partner->logo_url && !str_contains($partner->logo_url, 'placehold.co'))
-                <img src="{{ str_starts_with($partner->logo_url, 'http') ? $partner->logo_url : asset(ltrim($partner->logo_url, '/')) }}" alt="{{ $partner->name }}" class="w-full h-full object-contain">
+                <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="w-full h-full object-contain">
             @else
                 <img src="https://ui-avatars.com/api/?name={{ urlencode($partner->name) }}&background=4f46e5&color=fff&size=256&bold=true" alt="{{ $partner->name }}" class="w-full h-full object-cover rounded-full">
             @endif

@@ -33,7 +33,7 @@
             <div
                 class="absolute -bottom-10 -right-10 w-64 h-64 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000">
             </div>
-            <img src="assets/concert.png" alt="Concert"
+            <img src="{{ asset('assets/concert.png') }}" alt="Concert"
                 class="rounded-[2rem] shadow-2xl relative z-10 w-full object-cover aspect-[4/5] object-center">
 
             <div class="absolute -bottom-6 -left-6 glass p-6 rounded-2xl shadow-xl z-20 border border-white">
@@ -114,7 +114,7 @@
             <a href="{{ route('partner.profile', $partner->id) }}" class="group bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all duration-300 w-full flex flex-col items-center justify-center gap-3.5 aspect-[4/3] relative overflow-hidden">
                 <div class="w-16 h-16 rounded-xl flex items-center justify-center overflow-hidden bg-slate-50 group-hover:scale-105 transition-transform duration-300">
                     @if($partner->logo_url && !str_contains($partner->logo_url, 'placehold.co'))
-                        <img src="{{ str_starts_with($partner->logo_url, 'http') ? $partner->logo_url : asset(ltrim($partner->logo_url, '/')) }}" alt="{{ $partner->name }}" class="w-full h-full object-contain p-1">
+                        <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="w-full h-full object-contain p-1">
                     @else
                         <img src="https://ui-avatars.com/api/?name={{ urlencode($partner->name) }}&background=4f46e5&color=fff&size=128&bold=true" alt="{{ $partner->name }}" class="w-full h-full object-cover">
                     @endif
