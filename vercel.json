@@ -40,6 +40,7 @@
         "AWS_SECRET_ACCESS_KEY": "2414dc72ddfe1f7ac3cbb72ef9feaa4832a56016aa9c832d81e217c3c8db336b",
         "AWS_DEFAULT_REGION": "ap-southeast-1",
         "AWS_BUCKET": "posters",
+        "AWS_URL": "https://bcmuergskjegjquvrpkc.supabase.co/storage/v1/object/public",
         "AWS_ENDPOINT": "https://bcmuergskjegjquvrpkc.supabase.co/storage/v1/s3",
         "AWS_USE_PATH_STYLE_ENDPOINT": "true"
     }
