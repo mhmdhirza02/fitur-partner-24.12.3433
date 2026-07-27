@@ -14,9 +14,21 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleSSOController extends Controller
 {
-    public function redirect(Request $request)
+    private function getGoogleDriver()
     {
         $driver = Socialite::driver('google')->stateless();
+        $redirectUrl = config('services.google.redirect');
+        if (str_contains((string) $redirectUrl, 'localhost') && !str_contains(request()->getHost(), 'localhost')) {
+            $driver->redirectUrl('https://' . request()->getHost() . '/auth/google/callback');
+        } elseif (env('APP_ENV') === 'production') {
+            $driver->redirectUrl('https://fitur-partner-24-12-3433.vercel.app/auth/google/callback');
+        }
+        return $driver;
+    }
+
+    public function redirect(Request $request)
+    {
+        $driver = $this->getGoogleDriver();
         
         $stateParams = [];
         if ($request->has('event_id')) {
@@ -35,7 +47,7 @@ class GoogleSSOController extends Controller
     public function callback(Request $request)
     {
         try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
+            $googleUser = $this->getGoogleDriver()->user();
         } catch (\Exception $e) {
             return redirect()->route('home')->with('error', 'Login Google gagal: ' . $e->getMessage());
         }
