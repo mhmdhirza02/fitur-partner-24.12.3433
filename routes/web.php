@@ -27,6 +27,20 @@ Route::get('/assets/{filename}', function ($filename) {
     return redirect($baseUrl . '/posters/assets/' . $filename);
 });
 
+Route::get('/debug-poster-4', function() {
+    $e = \App\Models\Event::find(4);
+    $clean = ltrim(preg_replace('/^(posters\/)+/', '', (string) $e?->poster_path), '/');
+    return [
+        'id' => $e?->id,
+        'title' => $e?->title,
+        'poster_path_in_db' => $e?->poster_path,
+        'poster_url_generated' => $e?->poster_url,
+        's3_exists_direct' => \Illuminate\Support\Facades\Storage::disk('s3')->exists((string) $e?->poster_path),
+        's3_exists_with_posters' => \Illuminate\Support\Facades\Storage::disk('s3')->exists('posters/' . $clean),
+        's3_url_with_posters' => \Illuminate\Support\Facades\Storage::disk('s3')->url('posters/' . $clean),
+    ];
+});
+
 // Rute User Area
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
