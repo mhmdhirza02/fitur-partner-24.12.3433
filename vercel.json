@@ -28,11 +28,11 @@
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie",
 
-        "DB_CONNECTION": "mysql",
-        "DB_HOST": "bvhqnak3nfpetoc7rq3y-mysql.services.clever-cloud.com",
-        "DB_PORT": "3306",
-        "DB_DATABASE": "bvhqnak3nfpetoc7rq3y",
-        "DB_USERNAME": "u48xc6dha4nd1cp1",
-        "DB_PASSWORD": "qhy7PfIbt86GhsbxocNVqhy7PfIbt86Ghsbxoc"
+        "DB_CONNECTION": "pgsql",
+"DB_HOST": "aws-0-ap-southeast-1.pooler.supabase.com",
+"DB_PORT": "6543",
+"DB_DATABASE": "postgres",
+"DB_USERNAME": "postgres.bcmuergskjegjquvrpkc",
+"DB_PASSWORD": "YlIk0XDf1pbVeIei"
     }
 }
