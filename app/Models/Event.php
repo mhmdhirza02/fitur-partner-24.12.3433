@@ -40,8 +40,9 @@ class Event extends Model
             return asset('storage/' . $cleanPath);
         }
 
-        // Jika tidak ada di lokal, gunakan URL Supabase S3 sesuai jalur aslinya yang disimpan saat upload
-        return Storage::disk('s3')->url($this->poster_path);
+        // Jika tidak ada di lokal, gunakan URL Supabase S3 dengan path yang sudah dibersihkan dari duplikasi folder
+        $s3Url = Storage::disk('s3')->url($cleanPath);
+        return str_replace('/posters/posters/', '/posters/', $s3Url);
     }
 
     public function category()
