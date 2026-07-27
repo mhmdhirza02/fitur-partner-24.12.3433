@@ -100,7 +100,7 @@
                         Logo Organisasi / HIMA <span class="text-slate-400 text-xs font-normal">(Opsional)</span>
                     </label>
                     <div class="mt-1.5">
-                        <input id="logo" name="logo" type="file" accept="image/*"
+                        <input id="logo" name="logo" type="file" accept="image/*" onchange="if(this.files[0] && this.files[0].size > 3 * 1024 * 1024) { alert('⚠️ PERINGATAN:\nUkuran file logo terlalu besar (' + (this.files[0].size / 1024 / 1024).toFixed(1) + ' MB).\n\nBatas maksimal di Vercel adalah 3 MB agar tidak ditolak sistem.\nSilakan kompres foto Anda terlebih dahulu di iloveimg.com atau pilih foto lain yang ukurannya di bawah 2 MB!'); this.value = ''; }"
                             class="block w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition border border-slate-300 rounded-xl bg-white p-1.5 cursor-pointer focus:outline-none focus:border-indigo-600">
                     </div>
                     <p class="mt-1 text-[11px] text-slate-400">Format dukung: PNG, JPG, JPEG (Maks. 2MB)</p>

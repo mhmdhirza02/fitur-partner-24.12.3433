@@ -16,7 +16,7 @@
 
         <div>
             <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Upload Logo Partner</label>
-            <input type="file" name="logo" accept="image/*" class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium cursor-pointer" required>
+            <input type="file" name="logo" accept="image/*" onchange="if(this.files[0] && this.files[0].size > 3 * 1024 * 1024) { alert('⚠️ PERINGATAN:\nUkuran file logo terlalu besar (' + (this.files[0].size / 1024 / 1024).toFixed(1) + ' MB).\n\nBatas maksimal di Vercel adalah 3 MB agar tidak ditolak sistem.\nSilakan kompres foto Anda terlebih dahulu di iloveimg.com atau pilih foto lain yang ukurannya di bawah 2 MB!'); this.value = ''; }" class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium cursor-pointer" required>
             @error('logo') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
         </div>
 
