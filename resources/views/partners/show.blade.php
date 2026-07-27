@@ -85,7 +85,7 @@
             @foreach($partner->events->take(3) as $event)
             <a href="{{ route('events.show', $event->id) }}" class="block group">
                 <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-slate-100 flex h-28">
-                    <img src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path)) ? asset('storage/' . $event->poster_path) : 'https://placehold.co/400x400' }}" class="w-24 h-full object-cover group-hover:scale-105 transition-transform">
+                    <img src="{{ $event->poster_url }}" class="w-24 h-full object-cover group-hover:scale-105 transition-transform">
                     <div class="p-4 flex flex-col justify-center">
                         <h4 class="font-bold text-slate-800 text-sm line-clamp-2 group-hover:text-indigo-600 transition-colors">{{ $event->title }}</h4>
                         <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">

@@ -39,9 +39,7 @@
                 @endif
             </h3>
             <div class="flex gap-6 items-start">
-                <img src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path))
-                 ? asset('storage/' . $event->poster_path)
-                 : 'https://placehold.co/200x200' }}"
+                <img src="{{ $event->poster_url }}"
                     alt="Event" class="w-24 h-24 rounded-2xl object-cover shadow-md">
                 <div>
                     <h4 class="font-extrabold text-lg text-slate-900">{{ $event->title }}</h4>

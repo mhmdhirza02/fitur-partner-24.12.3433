@@ -79,7 +79,7 @@
                 <div class="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
                     <!-- Thumbnail & Status Banner -->
                     <div class="relative h-48 bg-slate-100 overflow-hidden">
-                        <img src="{{ ($trx->event->poster_path && \Storage::disk('public')->exists($trx->event->poster_path)) ? asset('storage/' . $trx->event->poster_path) : 'https://placehold.co/600x400/6366f1/ffffff?text=Event+Poster' }}"
+                        <img src="{{ $trx->event->poster_url }}"
                              alt="{{ $trx->event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         
                         <div class="absolute top-4 right-4 z-10">

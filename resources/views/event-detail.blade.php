@@ -12,7 +12,7 @@
         <!-- Left: Poster -->
         <div class="lg:col-span-1">
             <div class="sticky top-32">
-                <img src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path)) ? asset('storage/' . $event->poster_path) : 'https://placehold.co/600x800' }}" alt="{{ $event->title }}"
+                <img src="{{ $event->poster_url }}" alt="{{ $event->title }}"
                     class="w-full rounded-[2.5rem] shadow-2xl border-8 border-white object-cover aspect-[3/4]">
                 <div class="mt-8 p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group cursor-pointer" onclick="window.location.href='{{ $event->partner ? route('partner.profile', $event->partner->id) : '#' }}'">
                     <div class="flex justify-between items-center mb-4">
