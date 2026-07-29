@@ -28,8 +28,8 @@ class PartnerRegisterController extends Controller
 
         $logoPath = null;
         if ($request->hasFile('logo')) {
-            $logoPath = $request->file('logo')->store('partners', 'public');
-            $logoPath = Storage::url($logoPath);
+            $logoPath = $request->file('logo')->store('partners', 's3');
+            $logoPath = Storage::disk('s3')->url($logoPath);
         }
 
         $partner = Partner::create([

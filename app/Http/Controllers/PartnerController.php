@@ -46,11 +46,11 @@ class PartnerController extends Controller implements HasMiddleware
             'logo' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $logoPath = $request->file('logo')->store('partners', 'public');
+        $logoPath = $request->file('logo')->store('partners', 's3');
 
         Partner::create([
             'name' => $request->name,
-            'logo_url' => Storage::url($logoPath),
+            'logo_url' => Storage::disk('s3')->url($logoPath),
         ]);
 
         return redirect()->route('admin.partners.index');
@@ -71,8 +71,8 @@ class PartnerController extends Controller implements HasMiddleware
         $data = ['name' => $request->name];
 
         if ($request->hasFile('logo')) {
-            $logoPath = $request->file('logo')->store('partners', 'public');
-            $data['logo_url'] = Storage::url($logoPath);
+            $logoPath = $request->file('logo')->store('partners', 's3');
+            $data['logo_url'] = Storage::disk('s3')->url($logoPath);
         }
 
         $partner->update($data);
